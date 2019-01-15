@@ -54,17 +54,20 @@ class Window(Frame):
             img = Label(self, image=render)
             img.image = render
             img.grid(row=i)
-            entry_label = Entry(self)
-            entry_label.grid(row=i, column=1)
             self.img_list[i] = img
-            self.entry_list[i] = entry_label
 
             self.bnt.grid(row=num, column=1, sticky=W, padx=5, pady=5)
 
     def show_btn(self):
         self.file_list = os.listdir(self.img_path)
-        self.bnt = Button(self, text='Run', command=self.rename_img)
-        self.bnt.grid(row=0, column=1, sticky=W, padx=5, pady=5)
+        self.bnt = Button(self, text='Run')
+        self.bnt.bind('<Key>', self.key)
+        self.bnt.grid(row=0, sticky=W, padx=5, pady=5)
+        for i in range(self.num):
+            entry_label = Entry(self)
+            entry_label.grid(row=i, column=1)
+            self.entry_list[i] = entry_label
+
 
     def rename_img(self):
         if self.count != 0:
@@ -72,9 +75,17 @@ class Window(Frame):
                 str_code = self.entry_list[i].get()
                 os.rename(self.img_path + self.images_name[i],
                           self.rename_img_path + str_code + "_" + self.images_name[i])
+                self.entry_list[i].delete(0, END)
         self.show_img(self.num)
         self.count += 1
         self.update()
+
+    def key(self, event):
+        if event.char == '\r':
+            self.rename_img()
+        if event.char == '\t':
+            self.entry_list[0].focus_set()
+        print("pressed", repr(event.char))
 
 
 root = Tk()
