@@ -59,7 +59,8 @@ class Window(Frame):
             self.bnt.grid(row=num, column=1, sticky=W, padx=5, pady=5)
 
     def show_btn(self):
-        self.file_list = os.listdir(self.img_path)
+        list = os.listdir(self.img_path)
+        self.file_list = [l for l in list if 'bmp' in l or 'gif' in l or 'jpg' in l or 'png' in l]
         self.bnt = Button(self, text='Run')
         self.bnt.bind('<Key>', self.key)
         self.bnt.grid(row=0, sticky=W, padx=5, pady=5)
@@ -67,7 +68,6 @@ class Window(Frame):
             entry_label = Entry(self)
             entry_label.grid(row=i, column=1)
             self.entry_list[i] = entry_label
-
 
     def rename_img(self):
         if self.count != 0:
@@ -81,8 +81,9 @@ class Window(Frame):
         self.update()
 
     def key(self, event):
-        if event.char == '\r':
+        if event.char == '\r' or event.char == ' ':
             self.rename_img()
+            self.entry_list[0].focus_set()
         if event.char == '\t':
             self.entry_list[0].focus_set()
         print("pressed", repr(event.char))
