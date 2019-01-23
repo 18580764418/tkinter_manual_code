@@ -16,8 +16,8 @@ class Window(Frame):
         self.img_list = list(range(self.num))
         self.images_name = list(range(self.num))
         self.text = StringVar()
-        self.img_path = "{}/origin_img/files/".format(os.path.abspath('.'))
-        self.rename_img_path = "{}/origin_img/new_files/".format(os.path.abspath('.'))
+        self.img_path = "{}/origin_img/files/".format(os.path.abspath('..'))
+        self.rename_img_path = "{}/origin_img/new_files/".format(os.path.abspath('..'))
         self.bnt = None
         self.count = 0
 
@@ -73,9 +73,14 @@ class Window(Frame):
         if self.count != 0:
             for i in range(self.num):
                 str_code = self.entry_list[i].get()
-                os.rename(self.img_path + self.images_name[i],
-                          self.rename_img_path + str_code + "_" + self.images_name[i])
-                self.entry_list[i].delete(0, END)
+                if len(str_code) == 4:
+                    os.rename(self.img_path + self.images_name[i],
+                              self.rename_img_path + str_code + "_" + self.images_name[i])
+                    self.entry_list[i].delete(0, END)
+        if (self.count + 1) * self.num > len(self.file_list):
+            self.num = len(self.file_list) - self.count * self.num
+            for entry_label in self.entry_list[self.num:]:
+                entry_label.destroy()
         self.show_img(self.num)
         self.count += 1
         self.update()
@@ -83,9 +88,11 @@ class Window(Frame):
     def key(self, event):
         if event.char == '\r' or event.char == ' ':
             self.rename_img()
-            self.entry_list[0].focus_set()
+            if len(self.entry_list) > 0:
+                self.entry_list[0].focus_set()
         if event.char == '\t':
-            self.entry_list[0].focus_set()
+            if len(self.entry_list) > 0:
+                self.entry_list[0].focus_set()
         print("pressed", repr(event.char))
 
 
